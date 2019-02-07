@@ -1,0 +1,36 @@
+package com.revature.bank;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class RegisteredUser implements BankUser{
+
+	
+	private String username;
+	private String password;
+	private double balance;
+	private List<String> history = new ArrayList<String>();
+	
+	public RegisteredUser(String name, String pWord, int initFunds) {
+		username = name;
+		password = pWord;
+		balance = initFunds;
+		
+	}
+	
+	public void deposit(double amount) {
+		
+		//TODO Handle an invalid format
+		
+		balance += amount;
+		
+	}
+	
+	public void withdraw(double amount) {
+		
+		//TODO Handle an invalid format
+		
+		balance -= amount;
+	}
+	
+}

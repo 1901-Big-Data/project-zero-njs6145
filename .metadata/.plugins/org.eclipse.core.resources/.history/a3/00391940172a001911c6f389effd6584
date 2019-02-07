@@ -1,0 +1,17 @@
+package com.revature.bank;
+
+public class User {
+
+	
+	private String username;
+	private String password;
+	private int balance;
+	
+	public User(String name, String pWord, int initFunds) {
+		username = name;
+		password = pWord;
+		balance = initFunds;
+		
+	}
+	
+}
