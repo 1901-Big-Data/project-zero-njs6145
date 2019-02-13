@@ -6,7 +6,7 @@ select * from accounts;
 create table users (
     login_id number(10) primary key,
     username varchar2(255) not null unique,
-    password varchar2(255) not null,
+    pass_word varchar2(255) not null,
     firstname varchar2(255) not null,
     lastname varchar2(255) not null,
     mod number(1) not null

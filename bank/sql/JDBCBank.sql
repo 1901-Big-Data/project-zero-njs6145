@@ -26,8 +26,8 @@ end;
 
 create or replace procedure createNewUser(username varchar2, pass_word varchar2, firstname varchar2, lastname varchar2, moderator in number, login_id out number)
 is begin
-    insert into users(login_id, username, pass_word, firstname, lastname,moderator) 
-    values(login_id, username, pass_word, firstname, lastname, moderator);
+    insert into users(username, pass_word, firstname, lastname, moderator) 
+    values(username, pass_word, firstname, lastname, moderator);
     login_id := idCounter.currval;
     commit;
 end;

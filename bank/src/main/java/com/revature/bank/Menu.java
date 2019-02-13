@@ -147,17 +147,18 @@ public class Menu {
 	}
 	
 	static void createUserMenu() {
+		Scanner sc = new Scanner(System.in);
 			System.out.println("Enter the username you would like to use.");
-			String username = getStringInput();
+			String username = sc.nextLine();
 			System.out.println("Enter a password");
-			String password = getStringInput();
+			String password = sc.nextLine();
 			System.out.println("Enter first name: ");
-			String firstname = getStringInput();
+			String firstname = sc.nextLine();
 			System.out.println("Enter last name: ");
-			String lastname = getStringInput();
+			String lastname = sc.nextLine();
 			
 			try {
-				UserService.getService().createUser(username, password, firstname, lastname,0);
+				UserService.getService().createUser(username, password, firstname, lastname, 0);
 			}  catch (NoSuchElementException e) {
 				System.out.println("Error.");
 			}

@@ -152,7 +152,7 @@ Connection connect = ConnectionUtil.getConnection();
 		}
 	}
 
-	public Optional<User> createUser(String userName, String firstName, String lastName, String password,
+	public Optional<User> createUser(String userName, String password, String firstName, String lastName, 
 			int isSuper) {
 Connection connect = ConnectionUtil.getConnection();
 		
@@ -160,7 +160,9 @@ Connection connect = ConnectionUtil.getConnection();
 			return Optional.empty();
 		}
 		try {
-			String sql = "call createNewUser(?, ?, ?, ?, ?, ?)";
+			
+			
+			String sql = "call createNewUser(?, ?, ?, ?, ?)";
 			CallableStatement cs = connect.prepareCall(sql);
 			cs.setString(1, userName);
 			cs.setString(2, password);
@@ -170,7 +172,9 @@ Connection connect = ConnectionUtil.getConnection();
 			cs.registerOutParameter(6, Types.INTEGER);
 			cs.execute();
 			Integer id = cs.getInt(6);
+			System.out.println(id + " " +  userName + " "  + password + " " + firstName + " " + lastName  );
 			User user = new User(id, userName, "*****", firstName, lastName, 0);
+			
 			System.out.println("Welcome " + userName + " to JDBC Online Banking.");
 			return Optional.of(user);
 		} catch (Exception e) {
