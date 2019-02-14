@@ -16,22 +16,22 @@ public class UserService{
 	}
 
 
-	public Optional<Boolean> login(String username, String password, Integer mod) throws Exception {
+	public Optional<Boolean> login(String username, String password, int mod) throws Exception {
 		// TODO Auto-generated method stub
 		return userDao.login(username, password, mod);
 	}
-	public Optional<UserAccount> deposit(Integer id, double amount, String username) {
+	public Optional<UserAccount> deposit(int id, double amount, String username) {
 		// TODO Auto-generated method stub
 		return userDao.deposit(id, amount, username);
 	}
 
 
-	public Optional<UserAccount> withdraw(Integer id, double amount, String username) {
+	public Optional<UserAccount> withdraw(int id, double amount, String username) {
 		// TODO Auto-generated method stub
 		return userDao.withdraw(id, amount, username);
 	}
 
-	public Optional<UserAccount> deleteAccount(Integer id, String username) {
+	public Optional<UserAccount> deleteAccount(int id, String username) {
 		// TODO Auto-generated method stub
 		return userDao.deleteAccount(id, username);
 	}
@@ -54,12 +54,12 @@ public class UserService{
 	}
 
 
-	public Optional<User> updateUser(Integer id, String firstName, String lastName, int isSuper) {
+	public Optional<User> updateUser(int id, String firstName, String lastName, int isSuper) {
 		// TODO Auto-generated method stub
 		return userDao.updateUser(id, firstName, lastName, isSuper);
 	}
 
-	public Optional<User> deleteUser(Integer id) {
+	public Optional<User> deleteUser(int id) {
 		// TODO Auto-generated method stub
 		return userDao.deleteUser(id);
 	}

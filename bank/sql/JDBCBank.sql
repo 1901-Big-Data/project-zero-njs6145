@@ -24,7 +24,7 @@ begin
 end;
 /
 
-create or replace procedure createNewUser(username varchar2, pass_word varchar2, firstname varchar2, lastname varchar2, moderator in number, login_id out number)
+create or replace procedure newUser(username varchar2, pass_word varchar2, firstname varchar2, lastname varchar2, moderator in number, login_id out number)
 is begin
     insert into users(username, pass_word, firstname, lastname, moderator) 
     values(username, pass_word, firstname, lastname, moderator);
@@ -33,11 +33,11 @@ is begin
 end;
 /
 
-CREATE OR REPLACE PROCEDURE createNewAccount(account_name IN varchar2, account_owner IN varchar2, balance number, account_id out number)
+create or replace procedure newAccount(account_name IN varchar2, owner IN varchar2, balance number, login_id out number)
 IS
 BEGIN
-    INSERT INTO accounts (account_name, account_owner, balance) 
-    VALUES(account_name, account_owner, balance);
+    INSERT INTO accounts (account_name, owner, balance) 
+    VALUES(account_name, owner, balance);
     account_id := idCounter.currval;
     commit;
 END;

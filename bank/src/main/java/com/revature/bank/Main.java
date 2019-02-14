@@ -25,7 +25,7 @@ public class Main extends Menu {
 		
 		finally {
 			createMenu();
-			System.out.println("*Session Terminated*");
+			System.out.println("*Session Ended*");
 		}
 		
 		

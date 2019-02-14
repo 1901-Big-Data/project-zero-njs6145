@@ -9,6 +9,9 @@ import java.util.Scanner;
 
 public class Menu {
 
+	//Below are three helper methods to be called whenever the user needs to be asked for input
+	//This is meant to significantly reduce code clutter
+	
 	//Inputs
 	@SuppressWarnings("resource")
 	static int getInput() {
@@ -20,7 +23,7 @@ public class Menu {
 				Scanner user = new Scanner(System.in);
 				i = user.nextInt();	
 			} catch(Exception e) {
-				System.out.println("Please input a number in the range 0-9.");
+				System.out.println("Please input a number between 0-9.");
 				check = false;
 
 			}
@@ -62,9 +65,9 @@ public class Menu {
 		User currentUser;
 		int input = 0;
 		
-		//currentUser = new RegisteredUser("John", "password", 0.0); // For testing
-		while(input != 3) { 
-			
+		//If the input number isn't the value that is meant to exit the loop...
+		
+		while(input != 3) { 			
 		System.out.println("Welcome. Please input a number to confirm an option. If not registered, you will need to create an account.");
 		System.out.println("1) Login");
 		System.out.println("2) Sign Up");
@@ -96,6 +99,8 @@ public class Menu {
 		System.out.println("2) Moderator");
 		System.out.println("0) Return");
 		int input = getInput();
+		
+		//Similar deal with the createMenu(), as well as all future instances
 		while(input != 0) {
 		switch(input) {
 		
@@ -108,6 +113,7 @@ public class Menu {
 		String userPassword = getStringInput();
 		
 		try {
+			//parse for login to the DAO
 			Optional<Boolean> login = UserService.getService().login(userLogin, userPassword, 0);
 			if(login.get()) {
 				servicesMenu(userLogin);
@@ -117,10 +123,11 @@ public class Menu {
 			System.out.println("Login failed");
 		}
 		break;
-		//if valid
 		
-		//login with user info
-		//currentUser = this.User
+		
+		//Moderator login Same deal, but now checks for id code for moderator
+		//The reason a boolean isn't used is because normal SQL doesn't support them
+		
 		case 2:
 			System.out.println("Enter your credentials.");
 			
@@ -148,14 +155,16 @@ public class Menu {
 	
 	static void createUserMenu() {
 		Scanner sc = new Scanner(System.in);
+		
+		
 			System.out.println("Enter the username you would like to use.");
-			String username = sc.nextLine();
+			String username = getStringInput();
 			System.out.println("Enter a password");
-			String password = sc.nextLine();
+			String password = getStringInput();
 			System.out.println("Enter first name: ");
-			String firstname = sc.nextLine();
+			String firstname = getStringInput();
 			System.out.println("Enter last name: ");
-			String lastname = sc.nextLine();
+			String lastname = getStringInput();
 			
 			try {
 				UserService.getService().createUser(username, password, firstname, lastname, 0);
@@ -182,7 +191,6 @@ public class Menu {
 	
 	static void servicesMenu(String user) {
 
-		
 		System.out.println("Welcome back, " + user);
 		
 		int input = 0;
@@ -200,8 +208,7 @@ public class Menu {
 			System.out.println("6) Close Account");
 			System.out.println("7) Create Account");
 			System.out.println("8) Log Out");
-			
-			
+		
 				input = 9;
 			switch(input) {
 			
@@ -221,6 +228,8 @@ public class Menu {
 					if(userAccounts.isEmpty()) {
 						System.out.println("You currently have no accounts option.");
 					}else {
+						//parse for all accounts that the user has. For loops of this structure further down are for the same purpose
+						
 						for(int i = 0; i < userAccounts.size(); i++) {
 							System.out.println(userAccounts.get(i));
 						}
@@ -258,6 +267,7 @@ public class Menu {
 		String name = getStringInput();
 		
 		try {
+			//Same deal; parse the DAO
 			UserService.getService().createNewAccount(name, username);
 		}catch(NoSuchElementException e) {
 			System.out.println("Error.");
@@ -280,9 +290,10 @@ public class Menu {
 			
 			System.out.println("Input the id number of the account you'd like to close");
 			System.out.println("Please note that you cannot close an account with funds still in it.");
-			Integer id = getInput();
+			int id = getInput();
+			
+			//Check for a case sensitive Confirm for extra safety
 			System.out.println("Warning: Account id #" + id + " will be closed. Type 'Confirm' (case-sensitive) to confirm its deletion.");
-
 			String confirm = getStringInput();
 
 			if (confirm.equals("Confirm")) {

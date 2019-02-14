@@ -12,6 +12,9 @@ import java.util.Optional;
 
 public class UserOracle implements UserServiceDAO {
 
+	//Some methods are commentless since the SQL statements are self explanatory
+	//Comments will be placed where anything might be potentially unclear.
+	
 	private static UserOracle userOracle;
 	
 	public static UserServiceDAO getDao() {
@@ -22,13 +25,16 @@ public class UserOracle implements UserServiceDAO {
 		return userOracle;
 	}
 
-	public Optional<Boolean> login(String username, String password, Integer mod) throws Exception {
+	public Optional<Boolean> login(String username, String password, int mod) throws Exception {
 Connection connect = ConnectionUtil.getConnection();
 		
 		if (connect == null) {
 			return Optional.empty();
 		}
 		try {
+			
+			//Prepared statement is set up so that it can safely send a SQL command to the server. Will typically be the same deal for future implemntations
+			
 			String sql = "select * from users where username = ? and pass_word = ? and moderator = ?";
 			PreparedStatement ps = connect.prepareStatement(sql);
 			ps.setString(1, username);
@@ -40,7 +46,7 @@ Connection connect = ConnectionUtil.getConnection();
 				foundUser.add(new Integer(login.getInt("moderator")));
 			}
 			if (foundUser.isEmpty()) {
-				System.out.println("Incorrect username/password. Returning to main...");
+				System.out.println("Incorrect username/password. Going back.");
 				return Optional.of(false);
 			} else {
 				return Optional.of(true);
@@ -51,21 +57,21 @@ Connection connect = ConnectionUtil.getConnection();
 		}
 	}
 
-	public Optional<UserAccount> deposit(Integer id, double amount, String username) {
+	public Optional<UserAccount> deposit(int id, double amount, String username) {
 Connection connect = ConnectionUtil.getConnection();
 		
 		if (connect == null) {
 			return Optional.empty();
 		}
 		try {
-			String sql = "update accounts set balance = ? + (select balance from accounts where account_id = ?) where account_id = ? and account_owner = ?";
+			String sql = "update accounts set balance = ? + (select balance from accounts where account_id = ?) where account_id = ? and owner = ?";
 			PreparedStatement ps = connect.prepareStatement(sql);
 			ps.setDouble(1, amount);
 			ps.setInt(2, id);
 			ps.setInt(3, id);
 			ps.setString(4, username);
 			ps.executeQuery();
-			String sql2 = "select balance from accounts where account_id = ? and account_owner = ?";
+			String sql2 = "select balance from accounts where account_id = ? and owner = ?";
 			ps = connect.prepareStatement(sql2);
 			ps.setInt(1, id);
 			ps.setString(2, username);
@@ -83,14 +89,14 @@ Connection connect = ConnectionUtil.getConnection();
 		}
 	}
 
-	public Optional<UserAccount> withdraw(Integer id, double amount, String username) {
+	public Optional<UserAccount> withdraw(int id, double amount, String username) {
 Connection connect = ConnectionUtil.getConnection();
 		
 		if (connect == null) {
 			return Optional.empty();
 		}
 		try {
-			String checkFunds = "select balance from accounts where account_id = ? and account_owner = ?";
+			String checkFunds = "select balance from accounts where account_id = ? and owner = ?";
 			PreparedStatement ps = connect.prepareStatement(checkFunds);
 			ps.setInt(1, id);
 			ps.setString(2, username);
@@ -100,27 +106,30 @@ Connection connect = ConnectionUtil.getConnection();
 			if (checkBalance < amount) {
 				throw new Exception("Overdraft Error");
 			}
-			String sql = "update accounts set balance = -? + (select balance from accounts where account_id = ?) where account_id = ? and account_owner = ?";
+			
+			String sql = "update accounts set balance = -? + (select balance from accounts where account_id = ?) where account_id = ? and owner = ?";
 			ps = connect.prepareStatement(sql);
 			ps.setDouble(1, amount);
 			ps.setInt(2, id);
 			ps.setInt(3, id);
 			ps.setString(4, username);
 			ps.executeQuery();
-			String sql2 = "select balance from accounts where account_id = ? and account_owner = ?";
+			
+			String sql2 = "select balance from accounts where account_id = ? and owner = ?";
 			ps = connect.prepareStatement(sql2);
 			ps.setInt(1, id);
 			ps.setString(2, username);
 			rs = ps.executeQuery();
 			rs.next();
 			Double newBalance = rs.getDouble(1);
+			
 			System.out.println("New account balance: $" + newBalance);
 			String commit = "commit";
 			ps = connect.prepareStatement(commit);
 			ps.executeQuery();
 			return Optional.empty();
 		} catch (SQLException e) {
-			System.out.println("You do not own the selected account. Access denied.");
+			System.out.println("You do not own the selected account.");
 			return Optional.empty();
 		} catch (Exception e) {
 			System.out.println("Overdraft Error: Account has insufficient funds.");
@@ -140,9 +149,9 @@ Connection connect = ConnectionUtil.getConnection();
 			cs.setString(1, name);
 			cs.setString(2, username);
 			cs.setInt(3, 0);
-			cs.registerOutParameter(4, Types.INTEGER);
+			cs.registerOutParameter(4, Types.INTEGER); 
 			cs.execute();
-			Integer id = cs.getInt(4);
+			int id = cs.getInt(4); //Automatically registers an Integer ID
 			UserAccount user = new UserAccount(id, name, 0.0);
 			System.out.println("New account " + name + " has been created!");
 			return Optional.of(user);
@@ -171,11 +180,11 @@ Connection connect = ConnectionUtil.getConnection();
 			cs.setInt(5, 0);
 			cs.registerOutParameter(6, Types.INTEGER);
 			cs.execute();
-			Integer id = cs.getInt(6);
-			System.out.println(id + " " +  userName + " "  + password + " " + firstName + " " + lastName  );
+			int id = cs.getInt(6);
+			//System.out.println(id + " " +  userName + " "  + password + " " + firstName + " " + lastName  );  For testing
 			User user = new User(id, userName, "*****", firstName, lastName, 0);
 			
-			System.out.println("Welcome " + userName + " to JDBC Online Banking.");
+			System.out.println("Welcome " + userName + ".");
 			return Optional.of(user);
 		} catch (Exception e) {
 			System.out.println(e);
@@ -184,12 +193,12 @@ Connection connect = ConnectionUtil.getConnection();
 		}
 	}
 
-	public Optional<User> updateUser(Integer id, String firstName, String lastName, int isSuper) {
+	public Optional<User> updateUser(int id, String firstName, String lastName, int isSuper) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public Optional<User> deleteUser(Integer id) {
+	public Optional<User> deleteUser(int id) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -223,7 +232,7 @@ Connection connect = ConnectionUtil.getConnection();
 			return Optional.empty();
 		}
 		try {
-			String sql = "select * from accounts where account_owner = ? order by account_id";
+			String sql = "select * from accounts where owner = ? order by account_id";
 			PreparedStatement ps = connect.prepareStatement(sql);
 			ps.setString(1, username);
 			ResultSet rs = ps.executeQuery();
@@ -241,14 +250,14 @@ Connection connect = ConnectionUtil.getConnection();
 
 
 	@Override
-	public Optional<UserAccount> deleteAccount(Integer id, String username) {
+	public Optional<UserAccount> deleteAccount(int id, String username) {
 Connection connect = ConnectionUtil.getConnection();
 		
 		if (connect == null) {
 			return Optional.empty();
 		}
 		try {
-			String checkFunds = "select balance from accounts where account_id = ? and account_owner = ?";
+			String checkFunds = "select balance from accounts where account_id = ? and owner = ?";
 			PreparedStatement ps = connect.prepareStatement(checkFunds);
 			ps.setInt(1, id);
 			ps.setString(2, username);
@@ -258,7 +267,7 @@ Connection connect = ConnectionUtil.getConnection();
 			if (checkBalance != 0.0) {
 				throw new Exception("Leftover Funds Error");
 			}
-			String sql = "delete from accounts where account_id = ? and account_owner = ?";
+			String sql = "delete from accounts where account_id = ? and owner = ?";
 			ps = connect.prepareStatement(sql);
 			ps.setInt(1, id);
 			ps.setString(2, username);
