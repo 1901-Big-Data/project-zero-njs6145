@@ -3,10 +3,6 @@ package bank.jdbc_bank;
 import java.util.Scanner;
 import java.util.*;
 
-/**
- * Hello world!
- *
- */
 public class Main
 {
 	static Map<String, User> users = new HashMap<String, User>();
@@ -129,12 +125,13 @@ public class Main
 			}
 	
 		users.put(username, new User(username,password,firstName,lastName));
+		System.out.println("User created.");
 		startMenu();
 	}
 	
 	static void serviceMenu(String username) {
 		
-		System.out.println("Welcome back. Please select an option by typing a number.");
+		System.out.println("Welcome back " + users.get(username).getName() + ". Please select an option by typing a number.");
 		System.out.println("1) Deposit");
 		System.out.println("2) Withdraw");
 		System.out.println("3) Check accounts");
@@ -188,17 +185,19 @@ public class Main
 				System.out.println("Returning to service menu.");
 				System.out.println("--------------------------");
 				
-				serviceMenu(user.getName());
+				serviceMenu(user.getUsername());
 				}
 			
 			UserAccount account =  user.getAccount(accountName);
+			//System.out.println(account); for debugging
 			System.out.println("Enter an amount in the format of xx.xx (Type 0.0 to go back to the previous prompt.)");
 			double amount = getDoubleInput();
 			if(amount == 0.0) {
 			depositMenu(user);
 			}
 			account.deposit(amount);
-			
+			System.out.println("Funds deposited");
+			serviceMenu(user.getUsername());
 		}
 		catch(Exception e) {
 			System.out.println("Account does not exist. " + e);
@@ -215,7 +214,7 @@ public class Main
 				System.out.println("Returning to service menu.");
 				System.out.println("--------------------------");
 				
-				serviceMenu(user.getName());
+				serviceMenu(user.getUsername());
 				}
 			
 			UserAccount account =  user.getAccount(accountName);
@@ -229,6 +228,7 @@ public class Main
 			while(true) {
 			if(account.getBalance() > amount) {
 				account.withdraw(amount);
+				System.out.println("Funds withdrawn.");
 				break;
 			}
 			else {
@@ -277,12 +277,19 @@ public class Main
 		
 	private static void createAccountMenu(User user) {
 		
-		System.out.println("Enter the name of the account you would like to create");
+		System.out.println("Enter the name of the account you would like to create. (Type * to head to previous menu)");
 		String accountName = getStringInput();
+		if(accountName.equals("*")) {
+			System.out.println("Returning to service menu.");
+			System.out.println("--------------------------");
+			
+			serviceMenu(user.getUsername());
+			}
 		System.out.println("Enter the inital balance");
 		double initAmount = getDoubleInput();
 		user.getAllAccounts().put(accountName, new UserAccount(accountName,initAmount));
-		serviceMenu(user.getName());
+		System.out.println("Bank account created.");
+		serviceMenu(user.getUsername());
 		
 	}
 	

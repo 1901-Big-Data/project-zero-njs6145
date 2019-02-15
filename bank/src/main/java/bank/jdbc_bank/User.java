@@ -6,7 +6,7 @@ import java.util.Map;
 public class User {
 
 	private String username, password, firstname, lastname;
-	Map<String, UserAccount> accounts = new HashMap<String,UserAccount>();
+	private Map<String, UserAccount> accounts = new HashMap<String,UserAccount>();
 	
 	public User(String un, String pw, String fn, String ln) {
 		username = un;
